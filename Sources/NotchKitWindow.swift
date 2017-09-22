@@ -222,26 +222,28 @@ public final class NotchKitWindow: UIWindow {
     }
     
     private func updateSafeAreaInsets() {
-        guard let insets = rootViewController?.view.safeAreaInsets else {
-            return
-        }
-        
-        let finalInsets = UIEdgeInsets(
-            top:    maskedEdges.contains(.top)    ? insets.top    : 0,
-            left:   maskedEdges.contains(.left)   ? insets.left   : 0,
-            bottom: maskedEdges.contains(.bottom) ? insets.bottom : 0,
-            right:  maskedEdges.contains(.right)  ? insets.right  : 0)
-        
-        let safeViewFrame: CGRect = {
-            if shouldShowBarsOnlyOniPhoneX && !isiPhoneX {
-                return bounds
-            } else {
-                return bounds.insetBy(insets: finalInsets)
+        if #available(iOS 11, *) {
+            guard let insets = rootViewController?.view.safeAreaInsets else {
+                return
             }
-        }()
-        
-        UIView.animate(withDuration: 0.1) { [unowned self] in
-            self.safeView.frame = safeViewFrame
+            
+            let finalInsets = UIEdgeInsets(
+                top:    maskedEdges.contains(.top)    ? insets.top    : 0,
+                left:   maskedEdges.contains(.left)   ? insets.left   : 0,
+                bottom: maskedEdges.contains(.bottom) ? insets.bottom : 0,
+                right:  maskedEdges.contains(.right)  ? insets.right  : 0)
+            
+            let safeViewFrame: CGRect = {
+                if shouldShowBarsOnlyOniPhoneX && !isiPhoneX {
+                    return bounds
+                } else {
+                    return bounds.insetBy(insets: finalInsets)
+                }
+            }()
+            
+            UIView.animate(withDuration: 0.1) { [unowned self] in
+                self.safeView.frame = safeViewFrame
+            }
         }
     }
     
